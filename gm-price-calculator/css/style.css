@@ -1,0 +1,9 @@
+.gm-pc-widget{background:#fff;color:#000;font-family:inherit;padding:2rem;border-radius:1rem;box-shadow:0 4px 12px rgba(0,0,0,0.1);max-width:800px;margin:2rem auto}
+.gm-pc-step{margin-bottom:1.5rem}
+.gm-pc-step h2{font-size:1.5rem;margin-bottom:1rem}
+.gm-pc-btn{background:#007aff;color:#fff;border:none;padding:.75rem 1.5rem;border-radius:999px;font-size:1rem;cursor:pointer;margin-right:.5rem;margin-top:.5rem}
+.gm-pc-btn[disabled]{opacity:.5;cursor:default}
+.gm-pc-progress{height:4px;background:#007aff;border-radius:4px;margin-bottom:1.5rem;transition:width .3s}
+.gm-pc-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:.9rem}
+.gm-pc-table td,.gm-pc-table th{padding:.5rem;text-align:right;border-bottom:1px solid #eee}
+.gm-pc-table th:first-child,.gm-pc-table td:first-child{text-align:left}
