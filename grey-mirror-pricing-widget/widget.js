@@ -63,13 +63,8 @@
             result.breakdown[3][svc.name]=m;
         });
         // apply discount
-        let factor = 1;
-        if(discount==='super') factor=0.85;
-        else if(discount==='dirt') factor=0.80;
-        else if(discount==='reverse') factor=1.20;
         selected.forEach(s => {
             const svc = services[s];
-            const allowed = (discount==='reverse') || (svc.discountable);
             if(discount!=='none' && (discount==='reverse' || svc.discountable)){
                 for(let i=0;i<4;i++){
                     let cost = result.breakdown[i][svc.name];
@@ -92,21 +87,29 @@
     }
 
     function summaryText(selected){
-        const map=new Map([
-            ['gbp_opt','improve your visibility on Google Maps'],
-            ['cit_base',''],['cit_plus',''],
-            ['web_dev','modernize your website to convert visitors'],
-            ['backlink','increase your search authority'],
-            ['review','generate more 5-star reviews'],
-            ['calls','personally reach out to patients for feedback'],
-            ['community','create buzz in local online communities'],
-            ['entity','stand out in AI search results'],
-            ['answers',''],['prompt','']
-        ]);
         let parts=[];
-        selected.forEach(s=>{if(map.get(s)) parts.push(map.get(s));});
-        if(!parts.length) return '';
-        return 'You want to '+parts.join(', ') + '.';
+        if(selected.has('gbp_opt')||selected.has('cit_base')||selected.has('cit_plus')){
+            parts.push('improve your visibility on Google Maps');
+        }
+        if(selected.has('web_dev')){
+            parts.push('modernize your website to convert visitors');
+        }
+        if(selected.has('backlink')){
+            parts.push('increase your search authority');
+        }
+        if(selected.has('review')||selected.has('calls')){
+            parts.push('generate more 5-star reviews');
+        }
+        if(selected.has('community')){
+            parts.push('create buzz in local online communities');
+        }
+        if(selected.has('entity')||selected.has('answers')||selected.has('prompt')){
+            parts.push('stand out in AI search results');
+        }
+        if(parts.length===0) return '';
+        if(parts.length===1) return 'You want to '+parts[0]+'.';
+        const last=parts.pop();
+        return 'You want to '+parts.join(', ')+', and '+last+'.';
     }
 
     $(function(){
@@ -182,10 +185,10 @@
             form.empty();
             for(let key in services){
                 const svc=services[key];
-                const label=$('<label></label>').text(' '+svc.name);
+                const row=$('<label class="gm-service-item"></label>').text(' '+svc.name);
                 const chk=$('<input type="checkbox">').attr('value',key);
-                label.prepend(chk);
-                form.append(label).append('<br>');
+                row.prepend(chk);
+                form.append(row);
             }
         }
 
