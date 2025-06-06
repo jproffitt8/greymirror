@@ -120,6 +120,8 @@
         const results = root.find('.gm-results');
         const questionEl = quiz.find('.gm-question');
         const optionsEl = quiz.find('.gm-options');
+        const progressBar = root.find('.gm-progress-bar');
+        const nav = quiz.find('.gm-nav');
         let questions = baseQuestions.slice();
         const selected = new Set();
         let qIndex = 0;
@@ -128,35 +130,43 @@
 
         function showQuestion(){
             if(qIndex>=questions.length){
+                progressBar.css('width','100%');
                 quiz.hide();
                 inputs.show();
                 return;
             }
+            progressBar.css('width', (qIndex/questions.length*100)+'%');
             const q = questions[qIndex];
             questionEl.text(q.text);
             optionsEl.empty();
             if(q.type==='options'){
                 q.options.forEach(opt=>{
-                    $('<button class="gm-choice"></button>').text(opt.t).appendTo(optionsEl).on('click',function(e){
+                    const label=$('<label class="gm-pill"></label>');
+                    const input=$('<input type="radio">').val(opt.v);
+                    const span=$('<span></span>').text(opt.t);
+                    label.append(input,span).appendTo(optionsEl).on('click',function(e){
                         e.preventDefault();
                         if(q.key==='locs') locs=opt.v;
                         if(q.key==='pages') pages=opt.v;
                         qIndex++; showQuestion();
                     });
                 });
+                nav.hide();
             } else {
-                $('<button class="gm-yes">Yes</button>').appendTo(optionsEl).on('click',function(e){
-                    e.preventDefault();
-                    if(q.add) q.add.forEach(s=>selected.add(s));
-                    if(q.follow){
-                        questions.splice(qIndex+1,0,followQuestions[q.follow]);
-                    }
-                    qIndex++; showQuestion();
+                ['Yes','No'].forEach(ans=>{
+                    const label=$('<label class="gm-pill"></label>');
+                    const input=$('<input type="radio">').val(ans);
+                    const span=$('<span></span>').text(ans);
+                    label.append(input,span).appendTo(optionsEl).on('click',function(e){
+                        e.preventDefault();
+                        if(ans==='Yes'){
+                            if(q.add) q.add.forEach(s=>selected.add(s));
+                            if(q.follow) questions.splice(qIndex+1,0,followQuestions[q.follow]);
+                        }
+                        qIndex++; showQuestion();
+                    });
                 });
-                $('<button class="gm-no">No</button>').appendTo(optionsEl).on('click',function(e){
-                    e.preventDefault();
-                    qIndex++; showQuestion();
-                });
+                nav.hide();
             }
         }
         showQuestion();
@@ -167,6 +177,7 @@
             selected.clear();
             locs = 1; pages = 50;
             results.hide();
+            progressBar.css('width','0%');
             if(this.value==='manual'){
                 quiz.hide();
                 manual.show();
@@ -184,11 +195,12 @@
             const form = manual.find('.gm-service-list');
             form.empty();
             for(let key in services){
-                const svc=services[key];
-                const row=$('<label class="gm-service-item"></label>').text(' '+svc.name);
-                const chk=$('<input type="checkbox">').attr('value',key);
-                row.prepend(chk);
-                form.append(row);
+                const svc = services[key];
+                const label = $('<label class="gm-pill gm-service-item"></label>');
+                const chk = $('<input type="checkbox">').val(key);
+                const span = $('<span></span>').text(svc.name);
+                label.append(chk, span);
+                form.append(label);
             }
         }
 
@@ -197,7 +209,10 @@
             questionEl.text(fq.text);
             optionsEl.empty();
             fq.options.forEach(opt=>{
-                $('<button class="gm-choice"></button>').text(opt.t).appendTo(optionsEl).on('click',function(e){
+                const label=$('<label class="gm-pill"></label>');
+                const input=$('<input type="radio">').val(opt.v);
+                const span=$('<span></span>').text(opt.t);
+                label.append(input,span).appendTo(optionsEl).on('click',function(e){
                     e.preventDefault();
                     if(fq.key==='locs') locs=opt.v;
                     if(fq.key==='pages') pages=opt.v;
@@ -207,6 +222,7 @@
             quiz.show();
             manual.hide();
             inputs.hide();
+            nav.hide();
         }
 
         manual.find('.gm-manual-next').on('click', function(e){
@@ -257,6 +273,7 @@
                     list.append('<li>'+k+': $'+res.breakdown[i][k].toFixed(0)+'</li>');
                 }
                 month.append(list);
+                month.on('click', function(){ $(this).toggleClass('open'); });
             });
             results.find('.gm-table').empty().append(wrap);
         });
