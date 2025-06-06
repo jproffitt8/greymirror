@@ -2,7 +2,7 @@
 /*
 Plugin Name: Grey Mirror Pricing Calculator
 Description: Elementor widget for Grey Mirror pricing calculator.
-Version: 0.1.0
+Version: 0.1.1
 */
 
 if (!defined('ABSPATH')) {
@@ -10,7 +10,7 @@ if (!defined('ABSPATH')) {
 }
 
 class GM_Pricing_Plugin {
-    const VERSION = '0.1.0';
+    const VERSION = '0.1.1';
     public function __construct() {
         add_action('elementor/widgets/register', [$this, 'register_widget']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue']);
