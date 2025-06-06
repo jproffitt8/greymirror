@@ -35,17 +35,14 @@ class GM_Pricing_Widget extends Widget_Base {
             </div>
             <div class="gm-quiz" style="display:block">
                 <div class="gm-question"></div>
-                <button class="gm-yes">Yes</button>
-                <button class="gm-no">No</button>
+                <div class="gm-options"></div>
             </div>
             <div class="gm-manual" style="display:none">
                 <form class="gm-service-list"></form>
                 <button class="gm-manual-next">Next</button>
             </div>
             <div class="gm-inputs" style="display:none">
-                <label>Locations: <input type="number" id="gm-locations" min="1" value="1"></label>
-                <label>Website pages: <input type="number" id="gm-pages" min="1" value="50"></label>
-                <label>Discount: 
+                <label>Discount:
                     <select id="gm-discount">
                         <option value="none">No Discount</option>
                         <option value="super">Super-Duper Discount</option>

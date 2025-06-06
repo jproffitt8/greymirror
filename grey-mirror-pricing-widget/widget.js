@@ -13,15 +13,28 @@
         'prompt': {name:'Prompt & Model Feedback', pillar:'ai', dep:[], discountable:true, loc:false, base:[250,250,0], monthly:300}
     };
 
-    const questions = [
-        {text:'Do you want your practice to be the very first thing patients see on Google Maps and in near-me searches?', add:['gbp_opt','cit_base','cit_plus']},
-        {text:'Is your website outdated or failing to turn visitors into patients?', add:['web_dev']},
+    const baseQuestions = [
+        {id:'local', text:'Do you want your practice to be the very first thing patients see on Google Maps and in near-me searches?', add:['gbp_opt','cit_base','cit_plus'], follow:'locations'},
+        {id:'web', text:'Is your website outdated or failing to turn visitors into patients?', add:['web_dev'], follow:'pages'},
         {text:'Do you need to boost your site\'s authority with quality backlinks?', add:['backlink']},
         {text:'Are you struggling to consistently get fresh 5-star patient reviews?', add:['review']},
         {text:'Would you go the extra mile by calling patients to get feedback and reviews?', add:['calls']},
         {text:'Do you want to build buzz in local online communities around your practice?', add:['community']},
         {text:'Do you want your practice to be visible in AI-driven search results and voice assistants?', add:['entity','answers','prompt']}
     ];
+
+    const followQuestions = {
+        locations:{type:'options',key:'locs', text:'How many physical locations do you have?', options:[
+            {t:'1-2 locations', v:2},
+            {t:'3-4 locations', v:4},
+            {t:'4+ locations', v:5}
+        ]},
+        pages:{type:'options',key:'pages', text:'What size do you want your new website to be?', options:[
+            {t:'Small (\u226450 pages)', v:50},
+            {t:'Medium (51-100 pages)', v:100},
+            {t:'Large (101-150 pages)', v:150}
+        ]}
+    };
 
     function enforceDeps(selected){
         if(selected.has('cit_plus')) selected.add('cit_base');
@@ -103,8 +116,12 @@
         const inputs = root.find('.gm-inputs');
         const results = root.find('.gm-results');
         const questionEl = quiz.find('.gm-question');
+        const optionsEl = quiz.find('.gm-options');
+        let questions = baseQuestions.slice();
         const selected = new Set();
         let qIndex = 0;
+        let locs = 1;
+        let pages = 50;
 
         function showQuestion(){
             if(qIndex>=questions.length){
@@ -112,35 +129,50 @@
                 inputs.show();
                 return;
             }
-            questionEl.text(questions[qIndex].text);
+            const q = questions[qIndex];
+            questionEl.text(q.text);
+            optionsEl.empty();
+            if(q.type==='options'){
+                q.options.forEach(opt=>{
+                    $('<button class="gm-choice"></button>').text(opt.t).appendTo(optionsEl).on('click',function(e){
+                        e.preventDefault();
+                        if(q.key==='locs') locs=opt.v;
+                        if(q.key==='pages') pages=opt.v;
+                        qIndex++; showQuestion();
+                    });
+                });
+            } else {
+                $('<button class="gm-yes">Yes</button>').appendTo(optionsEl).on('click',function(e){
+                    e.preventDefault();
+                    if(q.add) q.add.forEach(s=>selected.add(s));
+                    if(q.follow){
+                        questions.splice(qIndex+1,0,followQuestions[q.follow]);
+                    }
+                    qIndex++; showQuestion();
+                });
+                $('<button class="gm-no">No</button>').appendTo(optionsEl).on('click',function(e){
+                    e.preventDefault();
+                    qIndex++; showQuestion();
+                });
+            }
         }
         showQuestion();
 
-        quiz.find('.gm-yes').on('click', function(e){
-            e.preventDefault();
-            questions[qIndex].add.forEach(s=>selected.add(s));
-            qIndex++;
-            showQuestion();
-        });
-        quiz.find('.gm-no').on('click', function(e){
-            e.preventDefault();
-            qIndex++;
-            showQuestion();
-        });
-
         root.find('input[name="gm_flow"]').on('change', function(){
+            questions = baseQuestions.slice();
+            qIndex = 0;
+            selected.clear();
+            locs = 1; pages = 50;
+            results.hide();
             if(this.value==='manual'){
                 quiz.hide();
                 manual.show();
                 inputs.hide();
-                results.hide();
                 buildManual();
             } else {
                 quiz.show();
                 manual.hide();
                 inputs.hide();
-                results.hide();
-                qIndex=0; selected.clear();
                 showQuestion();
             }
         });
@@ -157,6 +189,23 @@
             }
         }
 
+        function askFollow(q, callback){
+            const fq = followQuestions[q];
+            questionEl.text(fq.text);
+            optionsEl.empty();
+            fq.options.forEach(opt=>{
+                $('<button class="gm-choice"></button>').text(opt.t).appendTo(optionsEl).on('click',function(e){
+                    e.preventDefault();
+                    if(fq.key==='locs') locs=opt.v;
+                    if(fq.key==='pages') pages=opt.v;
+                    callback();
+                });
+            });
+            quiz.show();
+            manual.hide();
+            inputs.hide();
+        }
+
         manual.find('.gm-manual-next').on('click', function(e){
             e.preventDefault();
             selected.clear();
@@ -164,35 +213,49 @@
                 selected.add(this.value);
             });
             enforceDeps(selected);
-            inputs.show();
+
+            const needLoc = Array.from(selected).some(s=>services[s].loc);
+            const needPages = selected.has('web_dev');
+
+            function showInputs(){
+                inputs.show();
+                quiz.hide();
+            }
+
+            if(needLoc){
+                askFollow('locations', function(){
+                    if(needPages){
+                        askFollow('pages', showInputs);
+                    } else {
+                        showInputs();
+                    }
+                });
+            } else if(needPages){
+                askFollow('pages', showInputs);
+            } else {
+                showInputs();
+            }
         });
 
         root.find('.gm-calc').on('click', function(e){
             e.preventDefault();
-            const locs = parseInt($('#gm-locations').val())||1;
-            const pages = parseInt($('#gm-pages').val())||50;
             const discount = $('#gm-discount').val();
             enforceDeps(selected);
             const res = calcPrices(selected, locs, pages, discount);
             const summary = summaryText(selected);
             results.show();
             results.find('.gm-summary').text('Summary: '+summary);
-            const table = $('<table></table>');
-            const header = $('<tr><th>Month</th><th>Total</th></tr>');
-            table.append(header);
+            const wrap = $('<div class="gm-months"></div>');
             ['1','2','3','4+'].forEach((m,i)=>{
-                const row=$('<tr></tr>');
-                row.append('<td>Month '+m+'</td>');
-                row.append('<td>$'+res.months[i].toFixed(0)+'</td>');
-                const breakdown = res.breakdown[i];
-                const details=$('<ul></ul>');
-                for(let k in breakdown){
-                    details.append('<li>'+k+': $'+breakdown[k].toFixed(0)+'</li>');
+                const month = $('<div class="gm-month"></div>').append('<div class="gm-total">$'+res.months[i].toFixed(0)+'</div>').appendTo(wrap);
+                month.prepend('<div class="gm-label">Month '+m+'</div>');
+                const list=$('<ul class="gm-month-details"></ul>');
+                for(let k in res.breakdown[i]){
+                    list.append('<li>'+k+': $'+res.breakdown[i][k].toFixed(0)+'</li>');
                 }
-                row.append($('<td></td>').append(details));
-                table.append(row);
+                month.append(list);
             });
-            results.find('.gm-table').empty().append(table);
+            results.find('.gm-table').empty().append(wrap);
         });
     });
 })(jQuery);

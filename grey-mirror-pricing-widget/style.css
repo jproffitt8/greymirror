@@ -1,0 +1,10 @@
+.gm-widget{background:#fff;border-radius:8px;padding:20px;box-shadow:0 0 10px rgba(218,165,32,0.3);transition:box-shadow .3s,transform .3s;max-width:400px;margin:auto}
+.gm-widget:hover{box-shadow:0 0 15px rgba(218,165,32,0.6);transform:translateY(-2px)}
+.gm-question{font-weight:600;margin-bottom:10px}
+.gm-options button{margin:5px}
+.gm-months{display:flex;justify-content:space-between;margin-top:10px}
+.gm-month{background:#fafafa;padding:10px;border-radius:4px;position:relative;flex:1;margin:5px;cursor:pointer;transition:background .3s}
+.gm-month:hover{background:#fffbe6}
+.gm-month-details{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid #ccc;padding:5px;border-radius:4px;z-index:10;width:100%}
+.gm-month:hover .gm-month-details{display:block}
+@media(max-width:600px){.gm-widget{max-width:100%}}

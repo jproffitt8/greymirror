@@ -24,6 +24,8 @@ class GM_Pricing_Plugin {
     public function enqueue() {
         wp_register_script('gm-pricing-widget', plugins_url('widget.js', __FILE__), ['jquery'], self::VERSION, true);
         wp_enqueue_script('gm-pricing-widget');
+        wp_register_style('gm-pricing-widget', plugins_url('style.css', __FILE__), [], self::VERSION);
+        wp_enqueue_style('gm-pricing-widget');
     }
 }
 new GM_Pricing_Plugin();
