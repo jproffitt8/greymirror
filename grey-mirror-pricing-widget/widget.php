@@ -32,8 +32,8 @@ class GM_Pricing_Widget extends Widget_Base {
             <div id="gm-pricing-calculator" class="gm-card">
                 <div class="gm-progress"><div class="gm-progress-bar"></div></div>
                 <div class="gm-flow-select">
-                    <label><input type="radio" name="gm_flow" value="quiz" checked> Help Me Choose</label>
-                    <label><input type="radio" name="gm_flow" value="manual"> I Know What I Want</label>
+                    <label class="gm-pill"><input type="radio" name="gm_flow" value="quiz" checked><span>Help Me Choose</span></label>
+                    <label class="gm-pill"><input type="radio" name="gm_flow" value="manual"><span>I Know What I Want</span></label>
                 </div>
                 <div class="gm-quiz" style="display:block">
                     <div class="gm-question"></div>
@@ -48,7 +48,8 @@ class GM_Pricing_Widget extends Widget_Base {
                     <button class="gm-manual-next gm-next">Next <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
                 </div>
                 <div class="gm-inputs" style="display:none">
-                    <label>Discount:
+                    <div class="gm-question">Discount:</div>
+                    <label class="gm-select">
                         <select id="gm-discount">
                             <option value="none">No Discount</option>
                             <option value="super">Super-Duper Discount</option>

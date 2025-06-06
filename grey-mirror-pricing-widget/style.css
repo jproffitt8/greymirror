@@ -39,6 +39,19 @@
 .gm-pill:active{transform:scale(.97);}
 .gm-pill input{display:none;}
 .gm-pill input:checked+span{background:#0d90ff;color:#fff;border-color:#0d90ff;}
+.gm-select select{
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    padding:.6rem 1rem;
+    border:1px solid rgba(0,0,0,.2);
+    border-radius:9999px;
+    font-weight:500;
+    width:100%;
+    background:rgba(255,255,255,.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right .75rem center/12px;
+    cursor:pointer;
+}
+.gm-select select:focus{outline:none;box-shadow:0 0 0 3px rgba(13,144,255,.3);}
 .gm-nav{display:flex;justify-content:space-between;margin-top:1rem;gap:1rem;}
 .gm-nav button{min-width:140px;height:48px;border-radius:9999px;border:1px solid rgba(0,0,0,.2);background:transparent;cursor:pointer;font-weight:500;transition:background .15s,transform .15s;}
 .gm-nav button:hover{background:rgba(13,144,255,.1);}
