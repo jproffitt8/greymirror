@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Grey Mirror Service-Match Quiz
  * Description: Shortcode quiz to match services.
- * Version: 0.4.0
+ * Version: 0.4.1
  * Author: Grey Mirror Digital
  * Text Domain: gm-quiz
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'GM_QUIZ_VERSION', '0.4.0' );
+define( 'GM_QUIZ_VERSION', '0.4.1' );
 
 define( 'GM_QUIZ_DIR', plugin_dir_path( __FILE__ ) );
 
@@ -76,16 +76,22 @@ function gm_quiz_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'gm_quiz_assets' );
 
-function gm_quiz_shortcode() {
+function gm_quiz_shortcode( $atts = [] ) {
+    $atts = shortcode_atts([
+        'heading' => 'We have 2 047 unique service plans.<br>Let’s find the one that fits your practice.',
+        'start_text' => 'Start 30-second Quiz →',
+        'accent_color' => '',
+    ], $atts, 'gm_quiz' );
+    $style = $atts['accent_color'] ? ' style="--accent:' . esc_attr( $atts['accent_color'] ) . ';"' : '';
     ob_start();
     ?>
-<div class="gm-quiz">
+<div class="gm-quiz"<?php echo $style; ?>>
   <div class="gm-quiz__card" part="card">
     <div class="gm-quiz__progress"><div class="gm-quiz__bar"></div></div>
 
     <section class="gm-quiz__intro">
-      <h2>We have 2 047 unique service plans.<br>Let’s find the one that fits your practice.</h2>
-      <button class="gm-quiz__primary" data-step="start">Start 30-second Quiz →</button>
+      <h2><?php echo wp_kses_post( $atts['heading'] ); ?></h2>
+      <button class="gm-quiz__primary" data-step="start"><?php echo esc_html( $atts['start_text'] ); ?></button>
     </section>
 
     <section class="gm-quiz__result" hidden>
@@ -139,3 +145,12 @@ function gm_quiz_ajax_email() {
     wp_mail( $to, $subject, $message );
     wp_send_json_success();
 }
+
+function gm_quiz_register_elementor_widget( $widgets_manager ) {
+    if ( ! class_exists( '\\Elementor\\Widget_Base' ) ) {
+        return;
+    }
+    require_once GM_QUIZ_DIR . 'gm-elementor-widget.php';
+    $widgets_manager->register( new GM_Quiz_Elementor_Widget() );
+}
+add_action( 'elementor/widgets/register', 'gm_quiz_register_elementor_widget' );
