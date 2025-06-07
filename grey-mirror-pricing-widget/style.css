@@ -1,0 +1,71 @@
+.gm-wrapper{
+    display:flex;
+    flex-direction:column;
+    gap:2rem;
+    padding-inline:clamp(1rem,5vw,3rem);
+    align-items:center;
+}
+@media(min-width:1024px){
+    .gm-wrapper{flex-direction:row;gap:4rem;}
+}
+.gm-card{
+    --card-bg:rgba(255,255,255,.18);
+    --card-blur:blur(18px);
+    --card-border:1px solid rgba(255,255,255,.3);
+    font-family:var(--e-global-typography-primary-font-family);
+    color:var(--e-global-color-text);
+    background:var(--card-bg);
+    backdrop-filter:var(--card-blur);
+    border:var(--card-border);
+    border-radius:24px;
+    box-shadow:0 8px 24px rgba(0,0,0,.15);
+    padding:2rem 2.25rem;
+    isolation:isolate;
+    z-index:10;
+    width:100%;
+    max-width:min(420px,32vw);
+}
+@media(max-width:1023px){
+    .gm-card{max-width:360px;}
+}
+.gm-progress{position:relative;height:2px;width:100%;background:rgba(255,255,255,.2);border-top-left-radius:inherit;border-top-right-radius:inherit;overflow:hidden;margin-bottom:1rem;}
+.gm-progress-bar{position:absolute;height:100%;width:0;background:linear-gradient(90deg,#0d90ff 0%,#7fd5ff 100%);transition:width .3s cubic-bezier(.4,0,.2,1);}
+.gm-flow-select{display:flex;gap:1rem;margin-bottom:1rem;}
+.gm-flow-select label{font-weight:600;cursor:pointer;}
+.gm-question{font-weight:600;font-size:18px;margin-bottom:.5rem;}
+.gm-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1rem;}
+.gm-pill{display:inline-flex;align-items:center;justify-content:center;padding:.6rem 1rem;border-radius:9999px;font-weight:500;border:1px solid rgba(0,0,0,.2);cursor:pointer;transition:background .15s,transform .15s;}
+.gm-pill:hover{box-shadow:inset 0 0 0 2px rgba(255,255,255,.2);}
+.gm-pill:active{transform:scale(.97);}
+.gm-pill input{display:none;}
+.gm-pill input:checked+span{background:#0d90ff;color:#fff;border-color:#0d90ff;}
+.gm-select select{
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    padding:.6rem 1rem;
+    border:1px solid rgba(0,0,0,.2);
+    border-radius:9999px;
+    font-weight:500;
+    width:100%;
+    background:rgba(255,255,255,.08) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right .75rem center/12px;
+    cursor:pointer;
+}
+.gm-select select:focus{outline:none;box-shadow:0 0 0 3px rgba(13,144,255,.3);}
+.gm-nav{display:flex;justify-content:space-between;margin-top:1rem;gap:1rem;}
+.gm-nav button{min-width:140px;height:48px;border-radius:9999px;border:1px solid rgba(0,0,0,.2);background:transparent;cursor:pointer;font-weight:500;transition:background .15s,transform .15s;}
+.gm-nav button:hover{background:rgba(13,144,255,.1);}
+.gm-nav .gm-next{background:#0d90ff;color:#fff;border:none;}
+.gm-nav .gm-next:hover{background:#0b7de8;}
+.gm-nav .gm-next svg{margin-left:.5rem;transition:transform .15s;}
+.gm-nav .gm-next:hover svg{transform:translateX(4px);}
+.gm-months{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:1rem;}
+.gm-month{background:rgba(255,255,255,.12);backdrop-filter:blur(10px);border-radius:16px;padding:1rem;text-align:center;cursor:pointer;position:relative;transition:background .3s;}
+.gm-month:hover{background:rgba(255,255,255,.22);}
+.gm-month .gm-total{font-size:32px;font-weight:700;letter-spacing:-0.015em;}
+.gm-month .gm-label{text-transform:uppercase;font-size:6px;letter-spacing:.05em;opacity:.7;margin-bottom:.25rem;}
+.gm-month-details{overflow:hidden;max-height:0;transition:max-height .25s ease;text-align:left;margin-top:.5rem;font-size:14px;}
+.gm-month.open .gm-month-details{max-height:300px;}
+.gm-cta{width:100%;height:48px;border-radius:9999px;background:#0d90ff;color:#fff;font-weight:600;letter-spacing:.025em;border:none;margin-top:1rem;cursor:pointer;transition:background .15s;}
+.gm-cta:hover{background:#0b7de8;}
+.gm-service-item{display:block;margin-bottom:6px;}
